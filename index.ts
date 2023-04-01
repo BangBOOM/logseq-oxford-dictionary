@@ -67,9 +67,6 @@ class Word {
     }
 }
 
-// import * as fs from "fs";
-// read equity.html from local path?
-// const equity = fs.readFileSync('equity.html', 'utf8');
 
 async function search_word(word: string) {
     const request = await fetch("http://127.0.0.1:8000/def/" + word);
