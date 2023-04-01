@@ -1,0 +1,20 @@
+{
+  "name": "logseq-plugin-oxford-dictionary",
+  "version": "0.0.1",
+  "main": "dist/index.html",
+  "description": "get the definition of the word",
+  "scripts": {
+    "test": "parcel ./index.html",
+    "dev": "parcel ./index.html --public-url ./",
+    "build": "parcel build --public-url . --no-source-maps index.html"
+  },
+  "dependencies": {
+    "@logseq/libs": "^0.0.14",
+    "cheerio": "^1.0.0-rc.12",
+    "parcel": "^2.8.3"
+  },
+  "logseq": {
+    "id": "logseq-oxford-dictionary",
+    "icon": "./icon.png"
+  }
+}
