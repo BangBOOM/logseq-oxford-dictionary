@@ -1,4 +1,5 @@
 import "@logseq/libs";
+import { IBatchBlock } from "@logseq/libs/dist/LSPlugin.user";
 import * as cheerio from "cheerio";
 
 class Define {
@@ -67,15 +68,17 @@ class Word {
     }
 }
 
-
-async function search_word(word: string) {
-    const request = await fetch("http://127.0.0.1:8000/def/" + word);
-    const status = await request.status;
+async function get_word_html(word: string) {
+    const request = await fetch("http://localhost:8000/def/" + word);
     const response = await request.json();
-    console.log(status);
-    console.log(response);
+    return {
+        status_code: response.status_code,
+        definition: response.definition
+    };
+}
 
-    const $ = cheerio.load(response["definition"]);
+function get_word(wordHtml: string) {
+    const $ = cheerio.load(wordHtml);
     const form = $(".webtop .pos").text();
     const pronuce = $(".phons_br").text();
 
@@ -122,11 +125,30 @@ async function main() {
             return;
         }
         let content = await logseq.Editor.getEditingBlockContent();
-        console.log(content);
-        const word = await search_word(content);
-        console.log(word.to_block());
-        // word.pronunciation
-        await logseq.Editor.insertBatchBlock(block.uuid, word.to_block(), {
+        content = content.trim();
+        let word_blocks: IBatchBlock[] = [];
+        for (let i = 1; i < 6; i++) {
+            const word_html = await get_word_html(content + "_" + i);
+            if (word_html.status_code == 200) {
+                const word = get_word(word_html.definition);
+                word_blocks = word_blocks.concat(word.to_block());
+            } else {
+                break;
+            }
+        }
+
+        if (word_blocks.length == 0) {
+            await logseq.Editor.insertBatchBlock(
+                block.uuid,
+                [{ content: "word not found" }],
+                {
+                    sibling: false,
+                }
+            );
+            return;
+        }
+
+        await logseq.Editor.insertBatchBlock(block.uuid, word_blocks, {
             sibling: false,
         });
     });
