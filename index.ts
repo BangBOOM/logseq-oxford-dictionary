@@ -83,7 +83,7 @@ function get_word(wordHtml: string) {
     const pronuce = $(".phons_br").text();
 
     const deflineList: Define[] = [];
-    const definitions = $(".senses_multiple .sense");
+    const definitions = $(".sense");
     for (let i = 0; i < definitions.length; i++) {
         const variants = $(definitions[i]).find(".variants").text();
         const grammar = $(definitions[i]).find(".grammar").text();
