@@ -1,5 +1,5 @@
-from http import cookiejar
 import requests
+from http import cookiejar
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
