@@ -24,10 +24,10 @@ class Define {
     to_block() {
         let example_blocks = [];
         if (this.SYNONYM != "") {
-            example_blocks.push({ content: "SYNONYM" + this.SYNONYM });
+            example_blocks.push({ content: "SYNONYM: " + this.SYNONYM });
         }
         if (this.OPPOSITE != "") {
-            example_blocks.push({ content: "OPPOSITE" + this.OPPOSITE });
+            example_blocks.push({ content: "OPPOSITE: " + this.OPPOSITE });
         }
         return {
             content: this.explanation,
