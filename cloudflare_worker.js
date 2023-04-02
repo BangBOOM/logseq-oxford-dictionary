@@ -1,3 +1,7 @@
+/*
+Just copy and paste the code to Cloudflare Worker
+*/
+
 export default {
     async fetch(request) {
       const url = new URL(request.url)
