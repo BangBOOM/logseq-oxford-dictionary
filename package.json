@@ -1,7 +1,7 @@
 {
   "name": "logseq-plugin-oxford-dictionary",
   "version": "0.0.3",
-  "main": "dist/index.html",
+  "default": "./dist/index.html",
   "description": "get the definition of the word",
   "scripts": {
     "test": "parcel ./index.html",
