@@ -2,6 +2,18 @@ import "@logseq/libs";
 import { IBatchBlock } from "@logseq/libs/dist/LSPlugin.user";
 import * as cheerio from "cheerio";
 
+import type { SettingSchemaDesc } from "@logseq/libs/dist/LSPlugin.user";
+
+const settingsScema: SettingSchemaDesc[] = [
+    {
+        key: "url",
+        type: "string",
+        title: "URL to send request to",
+        description: "The url of Cloudflare Worker",
+        default: "http://localhost:8000/def/",
+    },
+];
+
 class Define {
     explanation: string;
     examples: string[];
@@ -68,12 +80,13 @@ class Word {
     }
 }
 
-async function get_word_html(word: string) {
-    const request = await fetch("http://localhost:8000/def/" + word);
+async function get_word_html(word: string, url: string) {
+    const fetchUrl = new URL(word, url);
+    const request = await fetch(fetchUrl.href);
     const response = await request.json();
     return {
         status_code: response.status_code,
-        definition: response.definition
+        definition: response.definition,
     };
 }
 
@@ -126,9 +139,12 @@ async function main() {
         }
         let content = await logseq.Editor.getEditingBlockContent();
         content = content.trim();
+
+        const url = logseq.settings?.url ?? "http://localhost:8000/def/";
+
         let word_blocks: IBatchBlock[] = [];
         for (let i = 1; i < 6; i++) {
-            const word_html = await get_word_html(content + "_" + i);
+            const word_html = await get_word_html(content + "_" + i, url);
             if (word_html.status_code == 200) {
                 const word = get_word(word_html.definition);
                 word_blocks = word_blocks.concat(word.to_block());
@@ -154,4 +170,5 @@ async function main() {
     });
 }
 
+logseq.useSettingsSchema(settingsScema);
 logseq.ready(main).catch(() => console.error);
